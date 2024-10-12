@@ -1,0 +1,60 @@
+services:
+  jenkins:
+    image: custom-jenkins/jenkins:jdk21
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: jenkins
+    restart: always
+    privileged: true
+    user: root
+    networks:
+      - network-jenkins
+    ports:
+      - 8080:8080
+      - 50000:50000
+    environment:
+      TZ: Asia/Bangkok
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./jenkins_home:/var/jenkins_home
+
+  sonarqube:
+    image: sonarqube:10-community
+    hostname: sonarqube
+    container_name: sonarqube
+    restart: unless-stopped
+    networks:
+      - network-jenkins
+    depends_on:
+      - sonarqube-db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - ./sonar_data/sonarqube_data:/opt/sonarqube/data
+      - ./sonar_data/sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonar_data/sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9001:9000"
+
+  sonarqube-db:
+    image: postgres:15.2-alpine3.17
+    hostname: postgresql
+    container_name: postgresql
+    restart: unless-stopped
+    networks:
+      - network-jenkins
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - ./data_psql/postgresql:/var/lib/postgresql
+      - ./data_psql/postgresql_data:/var/lib/postgresql/data
+
+networks:
+  network-jenkins:
+    name: network-jenkins
+    driver: bridge

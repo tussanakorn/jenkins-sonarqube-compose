@@ -1,0 +1,5 @@
+sonar_data/*
+data_psql/*
+jenkins_home/*
+jenkins.pdf
+cheat.pdf
