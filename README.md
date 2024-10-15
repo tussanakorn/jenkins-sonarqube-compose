@@ -57,7 +57,3 @@ docker-compose down
     ```sh
     docker-compose logs
     ```
-
-## License
-
-This project is licensed under the MIT License.
