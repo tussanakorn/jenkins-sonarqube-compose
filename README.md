@@ -12,7 +12,8 @@ This guide will help you set up Jenkins and SonarQube using Docker Compose.
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/tussanakorn/jenkins-sonarqube-compose.git    ```
+    git clone https://github.com/tussanakorn/jenkins-sonarqube-compose.git
+    ```
 
 
 ## Running the Services
